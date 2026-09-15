@@ -1,3 +1,11 @@
 fastapi
 uvicorn[standard]
 pydantic-settings
+sqlalchemy
+psycopg2-binary
+pgvector
+sentence-transformers
+pypdf
+python-docx
+rank-bm25
+requests

@@ -1,0 +1,4 @@
+
+# Uploaded learning documents
+backend/uploads/*
+!backend/uploads/.gitkeep
