@@ -9,3 +9,4 @@ pypdf
 python-docx
 rank-bm25
 requests
+python-multipart

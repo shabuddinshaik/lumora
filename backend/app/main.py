@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from sqlalchemy import text
 from app.api.qa import router as qa_router
 from app.api.fixed_rag import router as fixed_rag_router
+from app.api.ablation import router as ablation_router
+from app.api.ablation_context_selection import router as ablation_context_router
+from app.api.documents import router as documents_router
 from app.database import Base, engine
 from app.models import User
 
@@ -15,6 +18,10 @@ app = FastAPI(
 
 app.include_router(qa_router)
 app.include_router(fixed_rag_router)
+app.include_router(ablation_router)
+app.include_router(ablation_context_router)
+app.include_router(documents_router)
+
 @app.get("/health")
 def health_check():
     return {

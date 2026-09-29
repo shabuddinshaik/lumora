@@ -21,4 +21,6 @@ def ask_question(
         db=db,
         question=request.question,
         top_k=request.top_k,
+        document_id=request.document_id,
+        task_type=request.task_type,
     )

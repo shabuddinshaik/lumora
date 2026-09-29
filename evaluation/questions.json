@@ -1,0 +1,107 @@
+[
+  {
+    "id": 1,
+    "question": "What is machine learning?",
+    "category": "direct_factual",
+    "expected_document_ids": [2],
+    "answerable": true
+  },
+  {
+    "id": 2,
+    "question": "What type of data does supervised learning use?",
+    "category": "direct_factual",
+    "expected_document_ids": [3],
+    "answerable": true
+  },
+  {
+    "id": 3,
+    "question": "What are the layers of a neural network?",
+    "category": "direct_factual",
+    "expected_document_ids": [4],
+    "answerable": true
+  },
+  {
+    "id": 4,
+    "question": "What is the role of an operating system?",
+    "category": "direct_factual",
+    "expected_document_ids": [6],
+    "answerable": true
+  },
+  {
+    "id": 5,
+    "question": "How does supervised learning make predictions?",
+    "category": "conceptual",
+    "expected_document_ids": [3],
+    "answerable": true
+  },
+  {
+    "id": 6,
+    "question": "How does a neural network learn during training?",
+    "category": "conceptual",
+    "expected_document_ids": [4],
+    "answerable": true
+  },
+  {
+    "id": 7,
+    "question": "How does a database management system help manage data?",
+    "category": "conceptual",
+    "expected_document_ids": [5],
+    "answerable": true
+  },
+  {
+    "id": 8,
+    "question": "Why is an operating system important for application software?",
+    "category": "conceptual",
+    "expected_document_ids": [6],
+    "answerable": true
+  },
+  {
+    "id": 9,
+    "question": "What are classification and regression?",
+    "category": "keyword_heavy",
+    "expected_document_ids": [3],
+    "answerable": true
+  },
+  {
+    "id": 10,
+    "question": "What are gradient descent and backpropagation?",
+    "category": "keyword_heavy",
+    "expected_document_ids": [4],
+    "answerable": true
+  },
+  {
+    "id": 11,
+    "question": "What are the main responsibilities of an operating system?",
+    "category": "keyword_heavy",
+    "expected_document_ids": [6],
+    "answerable": true
+  },
+  {
+    "id": 12,
+    "question": "What are the main types of machine learning?",
+    "category": "cross_document",
+    "expected_document_ids": [2],
+    "answerable": true
+  },
+  {
+    "id": 13,
+    "question": "How are relational databases organized and queried?",
+    "category": "cross_document",
+    "expected_document_ids": [5],
+    "answerable": true
+  },
+  {
+    "id": 14,
+    "question": "What is reinforcement learning's reward function?",
+    "category": "insufficient_context",
+    "expected_document_ids": [],
+    "answerable": false
+  },
+  {
+    "id": 15,
+    "question": "What is the difference between SQL and NoSQL databases?",
+    "category": "insufficient_context",
+    "expected_document_ids": [5],
+    "answerable": false
+  }
+]

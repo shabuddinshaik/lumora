@@ -1,16 +1,21 @@
-def check_context_sufficiency(
+def get_relevant_results(
     results: list[dict],
     min_score: float = 0.0,
-) -> bool:
+    strong_score: float = 0.60,
+) -> list[dict]:
     """
-    Baseline context sufficiency check.
+    Deterministic baseline relevance filter.
 
-    Checks whether at least one retrieved result
-    has a score above the configured threshold.
+    Results above min_score are considered relevant.
+    Results at or above strong_score are considered strong.
+
+    The strongest result is always retained.
+    If a strong result exists, weaker results are not
+    automatically passed to the LLM.
     """
 
     if not results:
-        return False
+        return []
 
     valid_results = [
         result
@@ -19,12 +24,50 @@ def check_context_sufficiency(
         and result.get("score") is not None
     ]
 
-    if not valid_results:
-        return False
-
-    best_score = max(
-        float(result["score"])
+    relevant_results = [
+        result
         for result in valid_results
+        if float(result["score"]) >= min_score
+    ]
+
+    relevant_results.sort(
+        key=lambda result: float(result["score"]),
+        reverse=True,
     )
 
-    return best_score >= min_score
+    if not relevant_results:
+        return []
+
+    strong_results = [
+        result
+        for result in relevant_results
+        if float(result["score"]) >= strong_score
+    ]
+
+    if strong_results:
+        return strong_results[:1]
+
+    return relevant_results
+
+
+def check_context_sufficiency(
+    results: list[dict],
+    min_score: float = 0.0,
+) -> bool:
+    """
+    Baseline retrieval sufficiency check.
+
+    Returns True when at least one valid retrieved result
+    meets the configured relevance threshold.
+
+    Note:
+    This checks retrieval relevance only. It does not prove
+    that the retrieved context fully answers the question.
+    """
+
+    return len(
+        get_relevant_results(
+            results,
+            min_score=min_score,
+        )
+    ) > 0

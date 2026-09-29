@@ -1,0 +1,41 @@
+question_id,category,question,expected_facts,answerable
+Q01,simple,What is a database?,"A database is a structured system for storing, organizing, retrieving, and managing data.",yes
+Q02,simple,What is supervised learning?,Supervised learning uses labeled training data with known targets or labels.,yes
+Q03,simple,What is a neural network?,"A neural network is a machine learning model with input, hidden, and output layers.",yes
+Q04,simple,What is an operating system?,An operating system manages computer resources and provides services for applications.,yes
+Q05,simple,What is SQL?,SQL is used to work with relational databases and data stored in tables.,yes
+Q06,simple,What are the main types of supervised learning?,The main types are classification and regression.,yes
+Q07,simple,What is exploratory data analysis?,EDA uses analytical methods to review and understand data and identify useful patterns or insights.,yes
+Q08,simple,What is hypothesis testing?,Hypothesis testing is a structured process used to validate a hypothesis.,yes
+Q09,simple,What is NPV?,NPV is a financial analysis measure used when evaluating costs and benefits over time.,yes
+Q10,simple,What is a stakeholder?,Stakeholders are people or groups involved in or affected by a project.,yes
+Q11,complex,"What are the main responsibilities of an operating system, and what are some examples?","Responsibilities include process management, memory management, file management, device management, and security. Examples include Linux, Windows, and macOS.",yes
+Q12,complex,What is supervised learning and how do classification and regression differ?,"Supervised learning uses labeled data. Classification predicts discrete categories, while regression predicts continuous numerical values.",yes
+Q13,complex,How does a neural network learn?,A neural network adjusts weights during training using optimization methods such as gradient descent and backpropagation.,yes
+Q14,complex,What are the layers of a neural network and what is the purpose of the layers?,"A neural network typically has input, hidden, and output layers. These layers process input information and produce the output.",yes
+Q15,complex,What is a DBMS and how does a relational database organize data?,A DBMS manages databases. Relational databases organize data using tables and support SQL.,yes
+Q16,complex,Why is exploratory data analysis performed in a data analytics project?,"EDA helps understand data, identify gaps, detect patterns, and uncover insights that guide further analysis or research.",yes
+Q17,complex,What are the steps involved in hypothesis testing?,The corpus describes a five-step hypothesis-testing process used to validate a hypothesis.,yes
+Q18,complex,What are the main phases of a data analytics project lifecycle?,"The lifecycle has six phases covering business problem understanding, data identification/acquisition/analysis, preparation, EDA and hypothesis formulation, testing, and reporting/presentation.",yes
+Q19,complex,What is the purpose of a project report in a data analytics project?,The project report compiles findings and presents the results of the project.,yes
+Q20,complex,What factors and benefits are considered when selecting data analysis tools?,The corpus discusses factors related to data analysis tools and their benefits.,yes
+Q21,multi_chunk,Explain supervised learning and describe its two main types.,Supervised learning uses labeled data. Classification predicts discrete categories and regression predicts continuous values.,yes
+Q22,multi_chunk,Explain neural networks and the training methods used to adjust their weights.,"Neural networks contain input, hidden, and output layers. Training adjusts weights using gradient descent and backpropagation.",yes
+Q23,multi_chunk,Explain how a database and SQL are related.,"Relational databases organize information in tables, and SQL is used to work with relational database data.",yes
+Q24,multi_chunk,Explain the role of an operating system in managing computer resources.,"The operating system is responsible for areas such as process, memory, file, device, and security management.",yes
+Q25,multi_chunk,Explain why EDA is important before further data analysis.,"EDA helps researchers understand data, identify gaps, detect patterns, and formulate useful questions or hypotheses.",yes
+Q26,multi_chunk,Describe the complete six-phase data analytics project lifecycle.,The six phases are business problem understanding; data identification/acquisition/analysis; data preparation; EDA and hypothesis formulation; testing strategy; reporting and presentation.,yes
+Q27,multi_chunk,How are qualitative and quantitative analysis different?,The corpus distinguishes qualitative and quantitative analysis as analysis approaches used in the data analytics process.,yes
+Q28,multi_chunk,What is the relationship between hypothesis formulation and hypothesis testing?,Hypotheses are formulated during the analytics lifecycle and an appropriate testing strategy is subsequently designed to validate the hypothesis.,yes
+Q29,multi_chunk,"How do business problems, data analysis, and project reporting fit into a data analytics project?","The lifecycle begins with understanding the business problem, proceeds through data analysis and preparation, and ends with compiling the report and presenting findings.",yes
+Q30,multi_chunk,Explain how data preparation and exploratory data analysis contribute to a data analytics project.,"Data preparation cleans and structures data, while EDA helps understand the prepared data, identify patterns and gaps, and guide further analysis.",yes
+Q31,paraphrased,"In simple terms, where does supervised machine learning get the correct answers used during training?",It learns from labeled training examples containing known targets or labels.,yes
+Q32,paraphrased,What kind of structure does a relational database use to keep information organized?,It organizes information using tables.,yes
+Q33,paraphrased,What happens to the weights inside a neural network while it is being trained?,The weights are adjusted during training using methods such as gradient descent and backpropagation.,yes
+Q34,paraphrased,What is the main reason analysts first explore a dataset before deeper analysis?,"EDA is used to understand the data, find patterns or gaps, and guide further analysis.",yes
+Q35,paraphrased,"At the end of an analytics project, what is done with the findings?",The project report is compiled and the findings are presented.,yes
+Q36,out_of_scope,What is Kubernetes and how does it manage containers?,The available learning corpus does not contain enough information about Kubernetes.,no
+Q37,out_of_scope,What is Docker and how does Docker Compose work?,The available learning corpus does not contain enough information about Docker or Docker Compose.,no
+Q38,out_of_scope,What is Amazon Web Services and what is EC2?,The available learning corpus does not contain enough information about AWS or EC2.,no
+Q39,out_of_scope,What is Retrieval-Augmented Generation?,The available learning corpus does not contain enough information about RAG.,no
+Q40,out_of_scope,How does an LLM generate text?,The available learning corpus does not contain enough information about large language models or text generation.,no

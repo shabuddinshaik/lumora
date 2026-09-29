@@ -9,6 +9,7 @@ def vector_search(
     db: Session,
     query: str,
     top_k: int = 5,
+    document_id: int | None = None,
 ) -> list[dict]:
     if not query.strip():
         return []
@@ -25,6 +26,15 @@ def vector_search(
             distance.label("distance"),
         )
         .where(DocumentChunk.embedding.is_not(None))
+    )
+
+    if document_id is not None:
+        statement = statement.where(
+            DocumentChunk.document_id == document_id
+        )
+
+    statement = (
+        statement
         .order_by(distance)
         .limit(top_k)
     )

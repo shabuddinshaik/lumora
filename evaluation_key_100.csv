@@ -1,0 +1,101 @@
+question_id,category,question,expected_facts,answerable
+Q01,simple,What is a database?,"A database is a structured system for storing, organizing, retrieving, and managing data.",yes
+Q02,simple,What is supervised learning?,Supervised learning uses labeled training data with known targets or labels.,yes
+Q03,simple,What is a neural network?,"A neural network is a machine learning model with input, hidden, and output layers.",yes
+Q04,simple,What is an operating system?,An operating system manages computer resources and provides services for applications.,yes
+Q05,simple,What is SQL?,SQL is used to work with relational databases and data stored in tables.,yes
+Q06,simple,What are the main types of supervised learning?,The main types are classification and regression.,yes
+Q07,simple,What is exploratory data analysis?,"EDA helps understand data and identify patterns, gaps, and insights.",yes
+Q08,simple,What is hypothesis testing?,Hypothesis testing is a structured process used to validate a hypothesis.,yes
+Q09,simple,What is NPV?,NPV is a financial analysis measure used when evaluating costs and benefits over time.,yes
+Q10,simple,What is a stakeholder?,Stakeholders are people or groups involved in or affected by a project.,yes
+Q41,simple,What is classification in machine learning?,Classification predicts discrete categories or class labels.,yes
+Q42,simple,What is regression in machine learning?,Regression predicts continuous numerical values.,yes
+Q43,simple,What is gradient descent?,Gradient descent is an optimization method used to adjust model parameters during learning.,yes
+Q44,simple,What is a relational database?,A relational database organizes data using tables and supports relationships between data.,yes
+Q45,simple,What is a DBMS?,A DBMS is software that manages databases and provides ways to store and access data.,yes
+Q46,simple,What is data preparation?,Data preparation cleans and structures data for further analysis.,yes
+Q47,simple,What is qualitative analysis?,Qualitative analysis is an analysis approach used in the data analytics process.,yes
+Q48,simple,What is quantitative analysis?,Quantitative analysis is an analysis approach used in the data analytics process.,yes
+Q49,simple,What is a project report?,A project report compiles and communicates the findings of a project.,yes
+Q50,simple,What is data analysis?,"Data analysis examines data to identify useful information, patterns, and insights.",yes
+Q11,complex,"What are the main responsibilities of an operating system, and what are some examples?","Responsibilities include process, memory, file, device, and security management. Examples include Linux, Windows, and macOS.",yes
+Q12,complex,What is supervised learning and how do classification and regression differ?,Supervised learning uses labeled data. Classification predicts categories while regression predicts continuous values.,yes
+Q13,complex,How does a neural network learn?,A neural network adjusts weights during training using optimization methods such as gradient descent and backpropagation.,yes
+Q14,complex,What are the layers of a neural network and what is the purpose of the layers?,"A neural network has input, hidden, and output layers that process information and produce outputs.",yes
+Q15,complex,What is a DBMS and how does a relational database organize data?,A DBMS manages databases. Relational databases organize data using tables and support SQL.,yes
+Q16,complex,Why is exploratory data analysis performed in a data analytics project?,"EDA helps understand data, identify gaps, detect patterns, and guide further analysis.",yes
+Q17,complex,What are the steps involved in hypothesis testing?,The corpus describes a five-step hypothesis-testing process used to validate a hypothesis.,yes
+Q18,complex,What are the main phases of a data analytics project lifecycle?,"The lifecycle contains six phases covering business problem understanding, data work, preparation, EDA and hypothesis formulation, testing, and reporting.",yes
+Q19,complex,What is the purpose of a project report in a data analytics project?,The project report compiles findings and presents project results.,yes
+Q20,complex,What factors and benefits are considered when selecting data analysis tools?,The corpus discusses factors related to selecting data analysis tools and their benefits.,yes
+Q51,complex,How does backpropagation work with gradient descent when training a neural network?,Backpropagation helps calculate adjustments to weights and gradient descent is used to update them during learning.,yes
+Q52,complex,How does SQL help users work with data in relational databases?,SQL is used to work with data stored in relational database tables.,yes
+Q53,complex,Why are labels important in supervised learning?,Labels provide known target values that supervised learning uses during training.,yes
+Q54,complex,How does an operating system manage computer resources?,"The operating system manages resources including processes, memory, files, and devices.",yes
+Q55,complex,Why is data preparation performed before analysis?,Data preparation cleans and structures data so it can be analyzed effectively.,yes
+Q56,complex,How do descriptive statistics support exploratory data analysis?,Descriptive statistics help summarize and understand data during EDA.,yes
+Q57,complex,How does hypothesis formulation connect to later testing?,A hypothesis is formulated and an appropriate testing strategy is subsequently designed to evaluate it.,yes
+Q58,complex,What happens during the reporting and presentation phase of a data analytics project?,Findings are compiled into a report and presented.,yes
+Q59,complex,Why is understanding the business problem important in data analytics?,The lifecycle begins with understanding the business problem before proceeding through data analysis.,yes
+Q60,complex,How do data analysis tools support a data analytics project?,Data analysis tools provide capabilities for analyzing data and offer benefits considered during tool selection.,yes
+Q21,multi_concept,Explain supervised learning and describe its two main types.,Supervised learning uses labeled data. Classification predicts categories and regression predicts continuous values.,yes
+Q22,multi_concept,Explain neural networks and the training methods used to adjust their weights.,"Neural networks contain input, hidden, and output layers. Training adjusts weights using gradient descent and backpropagation.",yes
+Q23,multi_concept,Explain how a database and SQL are related.,"Relational databases organize information in tables, and SQL is used to work with relational database data.",yes
+Q24,multi_concept,Explain the role of an operating system in managing computer resources.,"The operating system manages processes, memory, files, devices, and security.",yes
+Q25,multi_concept,Explain why EDA is important before further data analysis.,"EDA helps understand data, identify gaps, detect patterns, and formulate useful questions or hypotheses.",yes
+Q26,multi_concept,Describe the complete six-phase data analytics project lifecycle.,"The six phases cover business problem understanding, data identification/acquisition/analysis, preparation, EDA and hypothesis formulation, testing, and reporting/presentation.",yes
+Q27,multi_concept,How are qualitative and quantitative analysis different?,The corpus distinguishes qualitative and quantitative analysis as analysis approaches in data analytics.,yes
+Q28,multi_concept,What is the relationship between hypothesis formulation and hypothesis testing?,Hypotheses are formulated and a testing strategy is subsequently designed to validate them.,yes
+Q29,multi_concept,"How do business problems, data analysis, and project reporting fit into a data analytics project?","The lifecycle starts with the business problem, proceeds through data work and analysis, and ends with reporting and presentation.",yes
+Q30,multi_concept,Explain how data preparation and exploratory data analysis contribute to a data analytics project.,"Preparation cleans and structures data while EDA helps understand it, identify patterns and gaps, and guide analysis.",yes
+Q61,multi_concept,Compare classification and regression and explain when each predicts categories or numerical values.,Both are supervised learning tasks; classification predicts discrete categories and regression predicts continuous numerical values.,yes
+Q62,multi_concept,"Explain the relationship between input, hidden, and output layers in a neural network.","Input, hidden, and output layers process information through the network to produce an output.",yes
+Q63,multi_concept,"Explain how a DBMS, relational tables, and SQL work together.","A DBMS manages databases, relational tables organize data, and SQL is used to work with the data.",yes
+Q64,multi_concept,Explain how data preparation and descriptive analysis support EDA.,"Preparation cleans and structures data, while descriptive analysis helps summarize and understand it during EDA.",yes
+Q65,multi_concept,"Explain the connection between labels, classification, and regression in supervised learning.",Supervised learning uses labeled data; classification predicts categories and regression predicts continuous values.,yes
+Q66,multi_concept,Explain how gradient descent and backpropagation work together during neural network training.,Backpropagation determines weight-related adjustments and gradient descent updates weights during training.,yes
+Q67,multi_concept,Explain how the business problem influences later data analysis and reporting.,The analytics lifecycle starts by understanding the business problem and proceeds through analysis before reporting findings.,yes
+Q68,multi_concept,Explain why hypothesis formulation occurs before a testing strategy is applied.,A hypothesis is formulated and an appropriate testing strategy is subsequently designed to evaluate it.,yes
+Q69,multi_concept,Explain how operating-system resource management supports applications.,The operating system manages computer resources and provides services that support applications.,yes
+Q70,multi_concept,Explain how the main phases of a data analytics lifecycle connect from problem understanding to reporting.,"The lifecycle progresses from business problem understanding through data work, preparation, EDA/hypothesis formulation, testing, and reporting.",yes
+Q31,paraphrased,"In simple terms, where does supervised machine learning get the correct answers used during training?",It learns from labeled training examples containing known targets or labels.,yes
+Q32,paraphrased,What kind of structure does a relational database use to keep information organized?,It organizes information using tables.,yes
+Q33,paraphrased,What happens to the weights inside a neural network while it is being trained?,Weights are adjusted during training using methods such as gradient descent and backpropagation.,yes
+Q34,paraphrased,What is the main reason analysts first explore a dataset before deeper analysis?,"EDA helps analysts understand data, identify patterns and gaps, and guide further analysis.",yes
+Q35,paraphrased,"At the end of an analytics project, what is done with the findings?",The project report is compiled and findings are presented.,yes
+Q71,paraphrased,Where do the target answers come from when a supervised learning model is trained?,They come from labeled training examples with known targets.,yes
+Q72,paraphrased,How are records arranged in a relational database?,Relational databases organize information using tables.,yes
+Q73,paraphrased,How are neural-network weights changed as the model learns?,Weights are adjusted during training using gradient descent and backpropagation.,yes
+Q74,paraphrased,Why do analysts examine their data before doing the main analysis?,"EDA helps understand data, identify gaps and patterns, and guide further analysis.",yes
+Q75,paraphrased,What happens to the conclusions at the close of an analytics project?,Findings are compiled into a report and presented.,yes
+Q76,paraphrased,What does a learning algorithm use as the known target during supervised training?,It uses labels or known target values in the training examples.,yes
+Q77,paraphrased,What structure lets a relational database store information in an organized way?,It uses tables to organize information.,yes
+Q78,paraphrased,What is adjusted inside a neural network during training?,The network weights are adjusted during training.,yes
+Q79,paraphrased,What is the purpose of looking at a dataset before applying deeper analytical methods?,"EDA helps understand the dataset and identify patterns, gaps, and useful questions.",yes
+Q80,paraphrased,How are project results communicated after the analytics work is completed?,The findings are compiled in a project report and presented.,yes
+Q81,paraphrased,What information tells a supervised model what the correct prediction should be?,Known labels or target values provide the correct answers during training.,yes
+Q82,paraphrased,How does a relational system arrange its stored information?,It arranges information in tables.,yes
+Q83,paraphrased,"During neural-network learning, what model parameters are updated?",The network weights are updated during training.,yes
+Q84,paraphrased,Why would an analyst investigate a dataset before moving to advanced analysis?,"EDA provides understanding of data, patterns, gaps, and insights for further analysis.",yes
+Q85,paraphrased,How are the final findings shared with stakeholders after an analytics project?,The findings are compiled into a report and presented.,yes
+Q36,out_of_scope,What is Kubernetes and how does it manage containers?,The available learning corpus does not contain enough information about Kubernetes.,no
+Q37,out_of_scope,What is Docker and how does Docker Compose work?,The available learning corpus does not contain enough information about Docker or Docker Compose.,no
+Q38,out_of_scope,What is Amazon Web Services and what is EC2?,The available learning corpus does not contain enough information about AWS or EC2.,no
+Q39,out_of_scope,What is Retrieval-Augmented Generation?,The available learning corpus does not contain enough information about RAG.,no
+Q40,out_of_scope,How does an LLM generate text?,The available learning corpus does not contain enough information about large language models or text generation.,no
+Q86,out_of_scope,What is blockchain and how does it work?,The available learning corpus does not contain enough information about blockchain.,no
+Q87,out_of_scope,What is quantum computing?,The available learning corpus does not contain enough information about quantum computing.,no
+Q88,out_of_scope,What is computer vision?,The available learning corpus does not contain enough information about computer vision.,no
+Q89,out_of_scope,What is natural language processing?,The available learning corpus does not contain enough information about natural language processing.,no
+Q90,out_of_scope,What is cybersecurity and how does it protect systems?,The available learning corpus does not contain enough information about cybersecurity.,no
+Q91,out_of_scope,What is cryptocurrency and how does Bitcoin work?,The available learning corpus does not contain enough information about cryptocurrency or Bitcoin.,no
+Q92,out_of_scope,What is Kubernetes orchestration used for?,The available learning corpus does not contain enough information about Kubernetes orchestration.,no
+Q93,out_of_scope,What is Apache Spark and how does distributed processing work?,The available learning corpus does not contain enough information about Apache Spark.,no
+Q94,out_of_scope,What is reinforcement learning?,The available learning corpus does not contain enough information about reinforcement learning.,no
+Q95,out_of_scope,What is a transformer architecture in modern AI models?,The available learning corpus does not contain enough information about transformer architecture.,no
+Q96,out_of_scope,How does an API gateway work?,The available learning corpus does not contain enough information about API gateways.,no
+Q97,out_of_scope,What is container orchestration?,The available learning corpus does not contain enough information about container orchestration.,no
+Q98,out_of_scope,What is cloud computing?,The available learning corpus does not contain enough information about cloud computing.,no
+Q99,out_of_scope,What is a convolutional neural network?,The available learning corpus does not contain enough information about convolutional neural networks.,no
+Q100,out_of_scope,What is federated learning?,The available learning corpus does not contain enough information about federated learning.,no

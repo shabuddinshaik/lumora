@@ -1,0 +1,9 @@
+question_id,expected_facts,answerable
+Q1,"A database is a structured system for storing, organizing, retrieving, and managing data.",yes
+Q2,"Operating system responsibilities include process management, memory management, file management, device management, and security. Examples include Linux, Windows, and macOS.",yes
+Q3,"Supervised learning uses labeled training data with known targets or labels. It includes classification and regression.",yes
+Q4,"A neural network has input, hidden, and output layers. Training adjusts weights using methods such as gradient descent and backpropagation.",yes
+Q5,"Supervised learning uses labeled data. Its main types are classification and regression; classification predicts discrete categories and regression predicts continuous numerical values.",yes
+Q6,"The six phases are: understanding business problem; data identification, acquisition, and analysis; data preparation/cleaning/structuring and synthetic data generation; exploratory data analytics and hypothesis formulation; testing strategy to validate the hypothesis; compiling the project report and presenting findings.",yes
+Q7,"EDA uses analytical methods to review data, arrive at conclusions, identify gaps, and formulate research questions. It helps understand data, detect patterns, and uncover insights for further analysis.",yes
+Q8,"The available learning materials do not contain enough information to answer the question about Kubernetes.",no

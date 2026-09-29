@@ -1,0 +1,48 @@
+File: src/calculator.py
+
+def calculate_total(items):
+    total = 0
+
+    for item in items:
+        quantity = item.get("quantity", 1)
+        total += item["price"] * quantity
+
+    return total
+
+
+File: tests/test_calculator.py
+
+from src.calculator import calculate_total
+
+
+def test_calculate_total():
+    items = [
+        {"price": 100, "quantity": 2},
+        {"price": 50, "quantity": 3},
+    ]
+
+    assert calculate_total(items) == 350
+
+
+Task:
+
+Improve calculate_total() with the following requirements:
+
+1. Missing "quantity" must continue to mean 1.
+2. Raise ValueError if price is negative.
+3. Raise ValueError if quantity is negative.
+4. Raise ValueError if price or quantity is not numeric.
+5. Do not modify the input dictionaries.
+6. Keep the function name calculate_total().
+7. Preserve the existing behavior for valid inputs.
+8. Add pytest tests for:
+   - missing quantity
+   - negative price
+   - negative quantity
+   - non-numeric price
+   - non-numeric quantity
+   - existing valid calculation
+9. Do not remove the existing test.
+10. Return the complete modified code for both files.
+
+Do not modify any unrelated behavior.
