@@ -610,3 +610,147 @@
 .assessment-limitations-list p:last-child {
   margin-bottom: 0;
 }
+
+
+/* Host diagnostics panel */
+.host-diagnostics-panel {
+  margin: 0 0 24px;
+  padding: 20px;
+  border: 1px solid var(--border-color, #dfe3eb);
+  border-radius: 12px;
+  background: var(--panel-background, #fff);
+  color: var(--text-color, #252b3b);
+}
+
+.host-diagnostics-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.host-diagnostics-header h2,
+.host-diagnostics-diagnosis h3,
+.host-diagnostics-columns h3,
+.host-diagnostics-recommendations h3 {
+  margin: 0 0 8px;
+}
+
+.host-diagnostics-header p,
+.host-diagnostics-diagnosis p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.host-diagnostics-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.host-diagnostics-summary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border-color, #dfe3eb);
+  border-radius: 8px;
+}
+
+.host-diagnostics-label {
+  color: var(--muted-text, #687086);
+  font-size: 12px;
+}
+
+.host-diagnostics-summary strong {
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
+
+.host-severity {
+  text-transform: capitalize;
+}
+
+.host-severity-high,
+.host-severity-critical {
+  color: #b42318;
+}
+
+.host-severity-medium {
+  color: #9a6700;
+}
+
+.host-severity-low {
+  color: #157347;
+}
+
+.host-diagnostics-diagnosis,
+.host-diagnostics-columns,
+.host-diagnostics-recommendations {
+  margin-top: 18px;
+}
+
+.host-diagnostics-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.host-diagnostics-panel ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.host-diagnostics-panel li + li {
+  margin-top: 6px;
+}
+
+.host-diagnostics-details {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--border-color, #dfe3eb);
+  border-radius: 8px;
+}
+
+.host-diagnostics-details summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.host-diagnostics-details pre {
+  max-width: 100%;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+
+.host-diagnostics-footnote {
+  margin: 16px 0 0;
+  color: var(--muted-text, #687086);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+  .host-diagnostics-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .host-diagnostics-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .host-diagnostics-header {
+    flex-direction: column;
+  }
+
+  .host-diagnostics-header button {
+    width: 100%;
+  }
+}

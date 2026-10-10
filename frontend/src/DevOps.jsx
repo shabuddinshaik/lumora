@@ -40,6 +40,10 @@ function DevOps() {
   const [results, setResults] = useState({})
   const [diagnosisLoading, setDiagnosisLoading] = useState({})
   const [diagnosisErrors, setDiagnosisErrors] = useState({})
+  const [hostAssessment, setHostAssessment] = useState(null)
+  const [hostAssessmentLoading, setHostAssessmentLoading] = useState(false)
+  const [hostAssessmentError, setHostAssessmentError] = useState('')
+
 
   const loadInventory = useCallback(async () => {
     setInventoryLoading(true)
@@ -125,10 +129,24 @@ function DevOps() {
     }
   }, [])
 
+  const loadHostAssessment = useCallback(async () => {
+    setHostAssessmentLoading(true)
+    setHostAssessmentError('')
+    try {
+      const data = await fetchJson('/api/v1/devops/host-assessment')
+      setHostAssessment(data)
+    } catch (error) {
+      setHostAssessmentError(error.message || 'Unable to load host diagnostics.')
+    } finally {
+      setHostAssessmentLoading(false)
+    }
+  }, [])
+
   useEffect(() => {
     loadInventory()
     targets.forEach(({ id }) => diagnose(id))
-  }, [loadInventory, diagnose])
+    loadHostAssessment()
+  }, [loadInventory, diagnose, loadHostAssessment])
 
   useEffect(() => {
     loadDetail(selectedId)
@@ -186,6 +204,135 @@ function DevOps() {
           and should be verified before taking operational action.
         </span>
       </div>
+
+      <section className="host-diagnostics-panel" aria-labelledby="host-diagnostics-title">
+        <div className="host-diagnostics-header">
+          <div>
+            <h2 id="host-diagnostics-title">Host Diagnostics</h2>
+            <p>Read-only assessment based on the latest saved host evidence.</p>
+          </div>
+          <button
+            type="button"
+            className="assessment-button"
+            onClick={loadHostAssessment}
+            disabled={hostAssessmentLoading}
+          >
+            {hostAssessmentLoading ? 'Refreshing…' : 'Refresh assessment'}
+          </button>
+        </div>
+
+        {hostAssessmentLoading && !hostAssessment && (
+          <p role="status">Loading host assessment…</p>
+        )}
+
+        {hostAssessmentError && (
+          <div className="observability-error" role="alert">
+            {hostAssessmentError}
+          </div>
+        )}
+
+        {hostAssessment && (
+          <>
+            <div className="host-diagnostics-summary">
+              <div>
+                <span className="host-diagnostics-label">Severity</span>
+                <strong className={`host-severity host-severity-${String(hostAssessment.severity || 'unknown').toLowerCase()}`}>
+                  {hostAssessment.severity || 'Unknown'}
+                </strong>
+              </div>
+              <div>
+                <span className="host-diagnostics-label">Confidence</span>
+                <strong>{hostAssessment.confidence || 'Not specified'}</strong>
+              </div>
+              <div>
+                <span className="host-diagnostics-label">Evidence window</span>
+                <strong>
+                  {hostAssessment.evidence?.window_minutes != null
+                    ? `${hostAssessment.evidence.window_minutes} minutes`
+                    : 'Not specified'}
+                </strong>
+              </div>
+              <div>
+                <span className="host-diagnostics-label">Collected at</span>
+                <strong>
+                  {hostAssessment.evidence?.collected_at
+                    ? new Date(hostAssessment.evidence.collected_at).toLocaleString()
+                    : 'Not specified'}
+                </strong>
+              </div>
+            </div>
+
+            <div className="host-diagnostics-diagnosis">
+              <h3>Assessment</h3>
+              <p>{hostAssessment.diagnosis || 'No diagnosis provided.'}</p>
+            </div>
+
+            <div className="host-diagnostics-columns">
+              <div>
+                <h3>Findings</h3>
+                {Array.isArray(hostAssessment.findings) && hostAssessment.findings.length ? (
+                  <ul>
+                    {hostAssessment.findings.map((item, index) => (
+                      <li key={`host-finding-${index}`}>
+                        {typeof item === 'string' ? item : JSON.stringify(item)}
+                      </li>
+                    ))}
+                  </ul>
+                ) : <p>No findings reported.</p>}
+              </div>
+              <div>
+                <h3>Observations</h3>
+                {Array.isArray(hostAssessment.observations) && hostAssessment.observations.length ? (
+                  <ul>
+                    {hostAssessment.observations.map((item, index) => (
+                      <li key={`host-observation-${index}`}>
+                        {typeof item === 'string' ? item : JSON.stringify(item)}
+                      </li>
+                    ))}
+                  </ul>
+                ) : <p>No observations reported.</p>}
+              </div>
+            </div>
+
+            <div className="host-diagnostics-recommendations">
+              <h3>Recommendations</h3>
+              {Array.isArray(hostAssessment.recommendations) && hostAssessment.recommendations.length ? (
+                <ul>
+                  {hostAssessment.recommendations.map((item, index) => (
+                    <li key={`host-recommendation-${index}`}>
+                      {typeof item === 'string' ? item : JSON.stringify(item)}
+                    </li>
+                  ))}
+                </ul>
+              ) : <p>No recommendations provided.</p>}
+            </div>
+
+            <details className="host-diagnostics-details">
+              <summary>Evidence details</summary>
+              <pre>{JSON.stringify(hostAssessment.evidence || {}, null, 2)}</pre>
+            </details>
+
+            <details className="host-diagnostics-details">
+              <summary>Limitations and interpretation</summary>
+              {Array.isArray(hostAssessment.limitations) && hostAssessment.limitations.length ? (
+                <ul>
+                  {hostAssessment.limitations.map((item, index) => (
+                    <li key={`host-limitation-${index}`}>
+                      {typeof item === 'string' ? item : JSON.stringify(item)}
+                    </li>
+                  ))}
+                </ul>
+              ) : <p>No limitations were returned by the API.</p>}
+            </details>
+
+            <p className="host-diagnostics-footnote">
+              Read-only view. Refresh retrieves the latest saved assessment; it does not
+              trigger a new host collection or change host configuration. Findings alone
+              do not prove the cause of a terminal disconnect.
+            </p>
+          </>
+        )}
+      </section>
 
       <section className="observability-analysis">
         <h2>Container inventory</h2>
