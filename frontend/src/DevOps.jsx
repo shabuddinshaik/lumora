@@ -156,7 +156,6 @@ function DevOps() {
 
   useEffect(() => {
     loadInventory()
-    targets.forEach(({ id }) => diagnose(id))
     loadHostAssessment()
   }, [loadInventory, diagnose, loadHostAssessment])
 
@@ -554,6 +553,46 @@ function DevOps() {
                           ))}
                         </ul>
                       ) : <p className="observability-muted">No decisive findings in the available evidence.</p>}
+
+                      {selectedAssessment.finding_details?.length > 0 && (
+                        <div className="finding-details-list">
+                          {selectedAssessment.finding_details.map((item, index) => (
+                            <article
+                              className="finding-detail"
+                              key={`finding-detail-${selectedId}-${item.finding || index}`}
+                            >
+                              <h5>{(item.finding || 'Finding').replaceAll('_', ' ')}</h5>
+
+                              {item.reason && (
+                                <p><strong>Reason:</strong> {item.reason}</p>
+                              )}
+
+                              {item.evidence?.length > 0 && (
+                                <div>
+                                  <strong>Supporting evidence</strong>
+                                  <ul>
+                                    {item.evidence.map((evidence, evidenceIndex) => (
+                                      <li key={`finding-evidence-${selectedId}-${index}-${evidenceIndex}`}>
+                                        {evidence}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+
+                              {item.evidence_ref && (
+                                <p className="observability-muted">
+                                  Snapshot: {item.evidence_ref.collected_at
+                                    ? new Date(item.evidence_ref.collected_at).toLocaleString()
+                                    : 'Unknown'}
+                                  {' · Source: '}
+                                  {item.evidence_ref.source || 'Unknown'}
+                                </p>
+                              )}
+                            </article>
+                          ))}
+                        </div>
+                      )}
                     </section>
 
                     <section className="assessment-section">
@@ -619,25 +658,6 @@ function DevOps() {
               </section>
 
               <section className="observability-analysis">
-                <h3>Evidence-based assessment</h3>
-                <p>
-                  {detail.status === 'running'
-                    ? 'The container was running when this snapshot was collected. This alone does not establish application health.'
-                    : detail.exit_code === 0
-                      ? 'The container has exited with code 0. This is not by itself evidence of a failure; check its intended workload and logs.'
-                      : `The container has exited with code ${detail.exit_code ?? 'unknown'}. Inspect its logs and expected workload to determine the cause.`}
-                </p>
-                {detail.restart_count > 0 && (
-                  <p>
-                    The snapshot reports {detail.restart_count} restart(s). Review timestamps and logs to determine whether restarts are unexpected.
-                  </p>
-                )}
-                <p className="observability-muted">
-                  Evidence source: {detail.evidence_source || 'Saved diagnostics snapshot'}
-                </p>
-              </section>
-
-              <section className="observability-analysis">
                 <h3>Lifecycle</h3>
                 <div className="observability-resource-grid">
                   <Metric label="Created" value={detail.created ? new Date(detail.created).toLocaleString() : '—'} />
@@ -665,10 +685,18 @@ function DevOps() {
         </section>
       </div>
 
-      <section className="observability-analysis legacy-diagnoses">
-        <h2>Diagnostic test cases</h2>
+      <details className="observability-analysis legacy-diagnoses">
+        <summary className="testing-validation-summary">
+          <span>
+            <strong>Testing &amp; Validation</strong>
+            <span className="observability-muted">
+              Optional regression tests for Lumora's deterministic diagnosis behavior.
+            </span>
+          </span>
+        </summary>
         <p className="observability-muted">
-          These existing allowlisted tests are retained to validate Lumora's deterministic diagnosis behavior.
+          These fixed, allowlisted test fixtures are for validation only. For normal troubleshooting,
+          select a discovered container above and use Assess container.
         </p>
         <div className="observability-grid">
           {targets.map(({ id, label }) => {
@@ -744,7 +772,7 @@ function DevOps() {
             )
           })}
         </div>
-      </section>
+      </details>
     </section>
   )
 }

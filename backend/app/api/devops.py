@@ -228,6 +228,9 @@ def assess_container_evidence(evidence: dict) -> dict:
         else:
             severity = "medium"
             findings.append("exited_without_exit_code")
+            observations.append(
+                "The container exited without a recorded exit code."
+            )
             recommendations.append(
                 "Inspect the saved lifecycle details and collect a fresh snapshot."
             )
@@ -360,10 +363,83 @@ def assess_container_evidence(evidence: dict) -> dict:
             "running status alone does not prove application health."
         )
 
+    unique_findings = list(dict.fromkeys(findings))
+    finding_details = []
+
+    finding_reasons = {
+        "non_zero_exit": "The saved container lifecycle records a non-zero exit code.",
+        "known_simulated_database_failure": (
+            "Saved logs match the known simulated database failure marker; "
+            "this is not proof of a real database outage."
+        ),
+        "exited_successfully": "The container exited with code 0; this may be expected for a one-shot workload.",
+        "exited_without_exit_code": "The saved evidence reports an exited container without a usable exit code.",
+        "exit_code_needs_context": "The saved exit code may describe an earlier lifecycle event and needs context.",
+        "health_unhealthy": "Docker's configured health check reports the container as unhealthy.",
+        "health_starting": "Docker's configured health check is still starting.",
+        "unknown_status": "The saved container status is missing or unrecognized.",
+        "restarts_observed": "The saved restart count is greater than zero; repeated restarts may indicate instability.",
+        "high_memory_usage": "Saved memory usage reached or exceeded 90% of the reported limit.",
+        "elevated_memory_usage": "Saved memory usage reached or exceeded 80% of the reported limit.",
+        "application_healthy_log_signal": "Saved application logs contain a healthy marker; this is not independent proof of health.",
+        "application_error_log_signal": "Saved logs contain lines matching common error markers; context is needed to interpret them.",
+    }
+
+    for finding in unique_findings:
+        matching_observations = [
+            observation for observation in observations
+            if (
+                finding == "non_zero_exit" and "exit code is" in observation
+                or finding == "known_simulated_database_failure"
+                and "simulated database" in observation.lower()
+                or finding == "exited_successfully" and "exited with code 0" in observation
+                or finding == "exited_without_exit_code"
+                and "exited without a recorded exit code" in observation.lower()
+                or finding == "exit_code_needs_context"
+                and "confirm which lifecycle event" in observation
+                or finding == "health_unhealthy"
+                and "health status: unhealthy" in observation
+                or finding == "health_starting"
+                and "health status: starting" in observation
+                or finding == "unknown_status"
+                and "missing or unrecognized" in observation
+                or finding == "restarts_observed"
+                and "restart count is" in observation
+                or finding == "high_memory_usage"
+                and isinstance(memory_percent, (int, float))
+                and memory_percent >= 90
+                and "Memory usage was" in observation
+                or finding == "elevated_memory_usage"
+                and isinstance(memory_percent, (int, float))
+                and 80 <= memory_percent < 90
+                and "Memory usage was" in observation
+                or finding == "application_healthy_log_signal"
+                and "APP_STATUS=healthy" in observation
+                or finding == "application_error_log_signal"
+                and "common error markers" in observation
+            )
+        ]
+        finding_details.append({
+            "finding": finding,
+            "reason": finding_reasons.get(
+                finding, "A deterministic assessment rule matched saved evidence."
+            ),
+            "evidence": matching_observations or [
+                "The finding was raised by a deterministic rule; review the saved observations for context."
+            ],
+            "evidence_ref": {
+                "collected_at": evidence.get("collected_at"),
+                "source": evidence.get(
+                    "evidence_source", "saved_container_snapshot"
+                ),
+            },
+        })
+
     return {
         "assessment_type": "deterministic_evidence_rules",
         "severity": severity,
-        "findings": list(dict.fromkeys(findings)),
+        "findings": unique_findings,
+        "finding_details": finding_details,
         "diagnosis": (
             "Potential operational issue indicated by saved evidence."
             if severity in ("medium", "high")
@@ -630,18 +706,24 @@ def correlate_container_evidence():
             severity = "high"
             signals.append({
                 "type": "non_zero_exit",
+                "reason": "A stopped container has a non-zero exit code.",
                 "evidence": f"Container exited with code {exit_code}.",
             })
-        elif health == "unhealthy":
+
+        if health == "unhealthy":
             severity = "high"
             signals.append({
                 "type": "unhealthy",
+                "reason": "Docker's configured health check reports the container as unhealthy.",
                 "evidence": "Docker reported an unhealthy container.",
             })
-        elif status not in ("running", "exited"):
-            severity = "medium"
+
+        if status not in ("running", "exited"):
+            if severity_order["medium"] > severity_order[severity]:
+                severity = "medium"
             signals.append({
                 "type": "unknown_status",
+                "reason": "The saved status is not one of the recognized running or exited states.",
                 "evidence": f"Saved status is {status!r}.",
             })
 
@@ -651,6 +733,7 @@ def correlate_container_evidence():
                 severity = restart_severity
             signals.append({
                 "type": "restarts_observed",
+                "reason": "The saved restart count is greater than zero; repeated restarts may indicate instability.",
                 "evidence": f"Saved restart count is {restart_count}.",
             })
 
@@ -664,6 +747,13 @@ def correlate_container_evidence():
             "project": project,
             "service": service,
             "collected_at": evidence.get("collected_at", item.get("collected_at")),
+            "evidence_ref": {
+                "container_id": container_id,
+                "collected_at": evidence.get(
+                    "collected_at", item.get("collected_at")
+                ),
+                "source": evidence.get("evidence_source", "saved_container_snapshot"),
+            },
             "severity": severity,
             "signals": signals,
             "possible_relationships": [],
