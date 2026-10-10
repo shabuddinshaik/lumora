@@ -8,6 +8,7 @@ class ContextPolicy:
     max_chunks: int
     min_chunks: int
     allow_expansion: bool
+    context_mode: str = "standard"
 
 
 def choose_context_policy(
@@ -36,6 +37,7 @@ def choose_context_policy(
             max_chunks=min(1, available),
             min_chunks=1,
             allow_expansion=True,
+            context_mode="minimal",
         )
 
     # Simple coding tasks usually need the most relevant source only.
@@ -45,12 +47,14 @@ def choose_context_policy(
                 max_chunks=min(1, available),
                 min_chunks=1,
                 allow_expansion=True,
+                context_mode="targeted",
             )
 
         return ContextPolicy(
             max_chunks=min(3, available),
             min_chunks=1,
             allow_expansion=True,
+            context_mode="deep",
         )
 
     # Comparisons generally need evidence for both sides.
@@ -59,6 +63,7 @@ def choose_context_policy(
             max_chunks=min(3, available),
             min_chunks=min(2, available),
             allow_expansion=True,
+            context_mode="multi_source",
         )
 
     # Summaries may need several pieces of the source.
@@ -67,6 +72,7 @@ def choose_context_policy(
             max_chunks=min(5, available),
             min_chunks=1,
             allow_expansion=True,
+            context_mode="broad",
         )
 
     # Data analysis may require multiple relevant pieces.
@@ -75,6 +81,7 @@ def choose_context_policy(
             max_chunks=min(3, available),
             min_chunks=1,
             allow_expansion=True,
+            context_mode="analytical",
         )
 
     # General fallback.
@@ -82,4 +89,5 @@ def choose_context_policy(
         max_chunks=min(2, available),
         min_chunks=1,
         allow_expansion=True,
+        context_mode="standard",
     )

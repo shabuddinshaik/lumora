@@ -25,6 +25,7 @@ def bm25_search(
     query: str,
     top_k: int = 5,
     document_id: int | None = None,
+    document_ids: list[int] | None = None,
 ) -> list[dict]:
     if not query.strip():
         return []
@@ -41,6 +42,11 @@ def bm25_search(
     if document_id is not None:
         statement = statement.where(
             DocumentChunk.document_id == document_id
+        )
+
+    if document_ids is not None:
+        statement = statement.where(
+            DocumentChunk.document_id.in_(document_ids)
         )
 
     chunks = db.execute(statement).scalars().all()

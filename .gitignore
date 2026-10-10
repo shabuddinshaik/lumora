@@ -16,3 +16,18 @@ grounding_refusal_*.csv
 # Evaluation generated outputs
 evaluation/*.csv
 benchmark_ablation_adaptive_retrieval.csv
+
+# Local deployment secrets
+.env
+
+# Local backups and temporary diagnostic work
+*.backup
+*.backup-*
+backups/
+backend-assessment-*/
+backend-correlation-*/
+backend-devops-health-signals-*/
+frontend-assessment-*/
+
+*.backup*
+*_results_backup.csv

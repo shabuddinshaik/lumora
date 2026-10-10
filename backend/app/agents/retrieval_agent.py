@@ -28,6 +28,10 @@ def _definition_evidence_guard(query: str, context: str) -> bool:
 
     A topic being merely mentioned or listed is not enough.
     The context should contain an explanatory statement about the topic.
+
+    Handles normal singular/plural variants such as:
+        "a neural network" -> "neural networks"
+        "an operating system" -> "operating systems"
     """
 
     normalized_query = query.lower().strip()
@@ -42,24 +46,57 @@ def _definition_evidence_guard(query: str, context: str) -> bool:
 
     normalized_context = context.lower()
 
-    if topic not in normalized_context:
+    # Build conservative topic variants.
+    topic_variants = [topic]
+
+    if topic.startswith("a "):
+        base_topic = topic[2:].strip()
+        topic_variants.append(base_topic)
+    elif topic.startswith("an "):
+        base_topic = topic[3:].strip()
+        topic_variants.append(base_topic)
+    else:
+        base_topic = topic
+
+    # Handle common singular/plural variants.
+    if base_topic.endswith("y"):
+        topic_variants.append(base_topic[:-1] + "ies")
+    elif base_topic.endswith(("s", "x", "z", "ch", "sh")):
+        topic_variants.append(base_topic + "es")
+    else:
+        topic_variants.append(base_topic + "s")
+
+    topic_variants = list(dict.fromkeys(topic_variants))
+
+    matching_topics = [
+        variant
+        for variant in topic_variants
+        if variant in normalized_context
+    ]
+
+    if not matching_topics:
         return False
 
     explanation_patterns = [
         " is a ",
         " is an ",
+        " are ",
         " refers to ",
         " means ",
         " defined as ",
         " involves ",
         " enables ",
         " allows ",
+        " manages ",
+        " provides ",
         " used to ",
+        " uses ",
         " consists of ",
         " is the ",
     ]
 
-    # Look at sentences containing the requested topic.
+    # Look at sentences containing the requested topic or a valid
+    # singular/plural variant.
     sentences = [
         sentence.strip()
         for sentence in normalized_context.replace("?", ".").split(".")
@@ -69,7 +106,7 @@ def _definition_evidence_guard(query: str, context: str) -> bool:
     topic_sentences = [
         sentence
         for sentence in sentences
-        if topic in sentence
+        if any(topic_variant in sentence for topic_variant in matching_topics)
     ]
 
     if not topic_sentences:
@@ -79,7 +116,6 @@ def _definition_evidence_guard(query: str, context: str) -> bool:
         any(pattern in sentence for pattern in explanation_patterns)
         for sentence in topic_sentences
     )
-
 
 def _is_complex_query(query: str) -> bool:
     """
@@ -116,6 +152,7 @@ def _retrieve(
     strategy: str,
     top_k: int,
     document_id: int | None = None,
+    document_ids: list[int] | None = None,
 ):
     if strategy == "bm25":
         return bm25_search(
@@ -123,6 +160,7 @@ def _retrieve(
             query,
             top_k=top_k,
             document_id=document_id,
+            document_ids=document_ids,
         )
 
     if strategy == "hybrid":
@@ -131,6 +169,7 @@ def _retrieve(
             query,
             top_k=top_k,
             document_id=document_id,
+            document_ids=document_ids,
         )
 
     return vector_search(
@@ -147,6 +186,7 @@ def retrieve_with_agent(
     top_k: int = 5,
     document_id: int | None = None,
     task_type: str = "auto",
+    document_ids: list[int] | None = None,
 ) -> dict:
     initial_strategy = choose_retrieval_strategy(query)
 
@@ -177,6 +217,7 @@ def retrieve_with_agent(
             strategy=strategy,
             top_k=top_k,
             document_id=document_id,
+            document_ids=document_ids,
         )
 
         if strategy == "hybrid":

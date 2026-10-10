@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import DevOps from './DevOps'
 
 function App() {
   const [activeNav, setActiveNav] = useState('Dashboard')
@@ -179,6 +180,7 @@ function App() {
     { name: 'Ask Lumora', icon: '✦' },
     { name: 'Quiz', icon: '✓' },
     { name: 'Progress', icon: '◔' },
+    { name: 'Observability', icon: '◉' },
   ]
 
   const deleteNote = async (documentId) => {
@@ -405,7 +407,9 @@ function App() {
       </aside>
 
       <main className="main-content">
-        {activeNav === 'My Notes' ? (
+        {activeNav === 'Observability' ? (
+          <DevOps />
+        ) : activeNav === 'My Notes' ? (
           <>
             <header className="topbar">
               <div>

@@ -597,11 +597,21 @@ def validate_python_requirements(
     # ---------------------------------------------------------
     # 1. Requested function name
     # ---------------------------------------------------------
+    # Only treat a function name as explicitly requested when the
+    # question names it clearly. Avoid interpreting phrases such as
+    # "function to reverse" as a function named "to".
     name_match = re.search(
-        r"\bfunction\s+(?:called\s+|named\s+)?([a-zA-Z_]\w*)",
+        r"\bfunction\s+(?:called\s+|named\s+)([a-zA-Z_]\w*)",
         question,
         flags=re.IGNORECASE,
     )
+
+    if not name_match:
+        name_match = re.search(
+            r"\bfunction\s+([a-zA-Z_]\w*)\s*\(",
+            question,
+            flags=re.IGNORECASE,
+        )
 
     if name_match:
         requested_name = name_match.group(1)

@@ -11,6 +11,7 @@ def hybrid_search(
     top_k: int = 5,
     candidate_k: int = 10,
     document_id: int | None = None,
+    document_ids: list[int] | None = None,
 ) -> list[dict]:
     if not query.strip():
         return []
@@ -20,6 +21,7 @@ def hybrid_search(
         query,
         top_k=candidate_k,
         document_id=document_id,
+        document_ids=document_ids,
     )
 
     bm25_results = bm25_search(
@@ -27,6 +29,7 @@ def hybrid_search(
         query,
         top_k=candidate_k,
         document_id=document_id,
+        document_ids=document_ids,
     )
 
     scores: dict[int, float] = {}

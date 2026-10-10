@@ -21,6 +21,8 @@ def generate_rag_answer(
     top_k: int = 5,
     document_id: int | None = None,
     task_type: str = "auto",
+    document_ids: list[int] | None = None,
+    force_retrieval: bool = False,
 ) -> dict:
     total_start = now()
 
@@ -39,7 +41,7 @@ def generate_rag_answer(
     # ---------------------------------------------------------
     # 2. Direct LLM path
     # ---------------------------------------------------------
-    if not task_analysis.requires_retrieval:
+    if not task_analysis.requires_retrieval and not force_retrieval:
         retrieval_latency = 0.0
 
         generation_start = now()
@@ -266,6 +268,7 @@ def generate_rag_answer(
         top_k=top_k,
         document_id=document_id,
         task_type=task_type,
+        document_ids=document_ids,
     )
 
     retrieval_latency = elapsed(retrieval_start)

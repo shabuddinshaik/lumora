@@ -88,14 +88,29 @@ def detect_artifact(query: str) -> tuple[str, str | None]:
     # Python
     # ---------------------------------------------------------
 
-    if any(term in text for term in [
-        "python",
+    python_code_signals = [
+        "python code",
+        "python function",
+        "python script",
+        "write python",
+        "write a python",
+        "create python",
+        "create a python",
+        "generate python",
+        "generate a python",
+        "implement python",
+        "implement a python",
+        "python program",
+        "python class",
+        "python snippet",
         "pytest",
         "pandas",
         "numpy",
         "fastapi",
         "flask",
-    ]):
+    ]
+
+    if any(term in text for term in python_code_signals):
         return "source_code", "python"
 
     # ---------------------------------------------------------
@@ -315,6 +330,8 @@ def analyze_task(query: str) -> TaskAnalysis:
             "tell me about",
             "why",
             "how",
+            " does ",
+            " do ",
             "define",
             "definition",
         ]):
@@ -388,6 +405,89 @@ def analyze_task(query: str) -> TaskAnalysis:
         for signal in retrieval_signals
     )
 
+    # Signals that the question is about an existing implementation,
+    # configuration, or system component rather than general knowledge.
+    implementation_reference_signals = [
+        "backend",
+        "frontend",
+        "application",
+        "system",
+        "service",
+        "configuration",
+        "implementation",
+        "codebase",
+        "database",
+        "api",
+        "endpoint",
+        "server",
+        "container",
+        "docker",
+        "kubernetes",
+        "ollama",
+        "postgres",
+        "postgresql",
+        "redis",
+        "prometheus",
+        "grafana",
+    ]
+
+    implementation_reference = any(
+        signal in text
+        for signal in implementation_reference_signals
+    )
+
+    # Questions asking how an existing component works or is configured
+    # should be grounded in the project's available knowledge when possible.
+    implementation_intent_signals = [
+        "configured",
+        "connect",
+        "connected",
+        "uses",
+        "used",
+        "implemented",
+        "setup",
+        "set up",
+    ]
+
+    implementation_intent = any(
+        signal in text
+        for signal in implementation_intent_signals
+    )
+
+    # Questions asking which implementation/component an existing
+    # system uses should be grounded in the project's knowledge.
+    implementation_selection_intent = (
+        task_type == "information"
+        and (
+            (
+                (" does " in text or " do " in text)
+                and any(signal in text for signal in [
+                    "use",
+                    "uses",
+                    "used",
+                    "using",
+                    "provider",
+                    "framework",
+                    "library",
+                    "database",
+                    "backend",
+                    "frontend",
+                    "service",
+                    "component",
+                    "technology",
+                    "platform",
+                ])
+            )
+            or " configured" in text
+            or "configuration" in text
+        )
+    )
+
+    implicit_internal_retrieval = (
+        (implementation_reference and implementation_intent)
+        or implementation_selection_intent
+    )
+
     # Context means that the task depends on material supplied by
     # the user. Generation by itself does not require context.
     code_modification_signals = [
@@ -440,12 +540,24 @@ def analyze_task(query: str) -> TaskAnalysis:
         requires_retrieval = explicit_retrieval_request
 
     elif task_type == "information":
-        requires_context = explicit_retrieval_request
-        requires_retrieval = explicit_retrieval_request
+        requires_context = (
+            explicit_retrieval_request
+            or implicit_internal_retrieval
+        )
+        requires_retrieval = (
+            explicit_retrieval_request
+            or implicit_internal_retrieval
+        )
 
     elif task_type == "general":
-        requires_context = explicit_retrieval_request
-        requires_retrieval = explicit_retrieval_request
+        requires_context = (
+            explicit_retrieval_request
+            or implicit_internal_retrieval
+        )
+        requires_retrieval = (
+            explicit_retrieval_request
+            or implicit_internal_retrieval
+        )
 
     # Pure generation tasks do not need external context.
     elif task_type in {

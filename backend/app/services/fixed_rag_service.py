@@ -16,6 +16,7 @@ def generate_fixed_rag_answer(
     db: Session,
     question: str,
     top_k: int = FIXED_TOP_K,
+    document_ids: list[int] | None = None,
 ) -> dict:
     total_start = now()
 
@@ -25,6 +26,7 @@ def generate_fixed_rag_answer(
         db,
         question,
         top_k=top_k,
+        document_ids=document_ids,
     )
 
     retrieval_latency = elapsed(retrieval_start)

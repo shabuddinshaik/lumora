@@ -13,6 +13,11 @@ from app.services.vector_search import vector_search
 
 FIXED_CONTEXT_SIZE = 5
 
+# Controlled benchmark corpus.
+# Keeps benchmark results comparable by excluding documents
+# added after the original benchmark dataset.
+CONTROLLED_DOCUMENT_IDS = [2, 3, 4, 5, 6]
+
 
 def generate_adaptive_retrieval_answer(
     db: Session,
@@ -31,18 +36,21 @@ def generate_adaptive_retrieval_answer(
             db,
             question,
             top_k=FIXED_CONTEXT_SIZE,
+            document_ids=CONTROLLED_DOCUMENT_IDS,
         )
     elif strategy == "hybrid":
         results = hybrid_search(
             db,
             question,
             top_k=FIXED_CONTEXT_SIZE,
+            document_ids=CONTROLLED_DOCUMENT_IDS,
         )
     else:
         results = vector_search(
             db,
             question,
             top_k=FIXED_CONTEXT_SIZE,
+            document_ids=CONTROLLED_DOCUMENT_IDS,
         )
 
     retrieval_latency = elapsed(retrieval_start)

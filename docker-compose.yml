@@ -21,7 +21,8 @@ services:
       - hf-cache:/root/.cache/huggingface
       - ./backend/uploads:/app/uploads
     environment:
-      DATABASE_URL: postgresql://lumora:lumora_password@postgres:5432/lumora
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      LUMORA_DIAGNOSTICS_URL: http://lumora-diagnostics:8081
     depends_on:
       postgres:
         condition: service_healthy
@@ -31,9 +32,9 @@ services:
     image: pgvector/pgvector:pg17
     container_name: lumora-postgres
     environment:
-      POSTGRES_DB: lumora
-      POSTGRES_USER: lumora
-      POSTGRES_PASSWORD: lumora_password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
