@@ -31,3 +31,16 @@ frontend-assessment-*/
 
 *.backup*
 *_results_backup.csv
+
+
+
+
+# Docker diagnostics runtime data and local artifacts
+docker-lab/evidence/
+docker-lab/**/__pycache__/
+docker-lab/**/*.pyc
+docker-lab/*.before-*
+docker-lab/**/*.before-*
+docker-lab/*.backup*
+docker-lab/**/*.backup*
+docker-lab/.env

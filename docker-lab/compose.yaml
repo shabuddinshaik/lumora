@@ -1,0 +1,12 @@
+services:
+  healthy:
+    image: busybox:1.37
+    container_name: lumora-test-healthy
+    command: ["sh", "-c", "while true; do echo 'APP_STATUS=healthy'; sleep 15; done"]
+    restart: unless-stopped
+
+  failing:
+    image: busybox:1.37
+    container_name: lumora-test-failing
+    command: ["sh", "-c", "echo 'ERROR: simulated database connection failure'; exit 1"]
+    restart: "no"

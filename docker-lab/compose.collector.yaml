@@ -1,0 +1,25 @@
+services:
+  lumora-diagnostics:
+    build:
+      context: ./collector
+    container_name: lumora-diagnostics
+    restart: unless-stopped
+    group_add:
+      - "${LUMORA_EVIDENCE_GID:-1004}"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    ports:
+      - "127.0.0.1:8081:8081"
+    volumes:
+      - ./evidence:/evidence:ro
+    networks:
+      - default
+      - lumora
+
+networks:
+  lumora:
+    external: true
+    name: lumora_default

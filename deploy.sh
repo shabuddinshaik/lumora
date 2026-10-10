@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 LUMORA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LAB_DIR="${LUMORA_LAB_DIR:-$HOME/lumora-docker-lab}"
+LAB_DIR="${LUMORA_LAB_DIR:-$HOME/lumora/docker-lab}"
 EVIDENCE_DIR="$LAB_DIR/evidence"
 GROUP_NAME="lumora-evidence"
 
