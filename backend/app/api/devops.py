@@ -112,6 +112,136 @@ def analyze_evidence(evidence: dict) -> dict:
     }
 
 
+@router.get("/capabilities")
+def get_observability_capabilities():
+    """Report configured observability sources and saved-evidence availability."""
+    from datetime import datetime, timezone
+
+    def parse_timestamp(value):
+        if not isinstance(value, str) or not value:
+            return None
+        try:
+            parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            if parsed.tzinfo is None:
+                parsed = parsed.replace(tzinfo=timezone.utc)
+            return parsed
+        except ValueError:
+            return None
+
+    def evidence_source(path, timestamp_field="collected_at", stale_after_minutes=15):
+        checked_at = datetime.now(timezone.utc).isoformat()
+        try:
+            response = requests.get(
+                f"{COLLECTOR_URL}{path}",
+                timeout=REQUEST_TIMEOUT,
+            )
+            response.raise_for_status()
+            payload = response.json()
+            if not isinstance(payload, dict):
+                return {
+                    "status": "unavailable",
+                    "reason": "Collector returned an unexpected evidence format",
+                    "checked_at": checked_at,
+                    "collected_at": None,
+                }
+
+            collected_at = payload.get(timestamp_field)
+            collected_time = parse_timestamp(collected_at)
+            age_minutes = None
+            if collected_time is not None:
+                age_minutes = max(
+                    0.0,
+                    (datetime.now(timezone.utc) - collected_time).total_seconds() / 60,
+                )
+
+            status = "available"
+            reason = "Saved evidence is reachable"
+            if collected_time is None:
+                status = "unavailable"
+                reason = "Evidence timestamp is missing or invalid"
+            elif age_minutes > stale_after_minutes:
+                status = "stale"
+                reason = f"Evidence is older than {stale_after_minutes} minutes"
+
+            result = {
+                "status": status,
+                "reason": reason,
+                "checked_at": checked_at,
+                "collected_at": collected_at,
+                "age_minutes": round(age_minutes, 2) if age_minutes is not None else None,
+                "stale_after_minutes": stale_after_minutes,
+            }
+            if path == "/inventory":
+                result["total_discovered"] = payload.get("total_discovered")
+                result["total_collected"] = payload.get("total_collected")
+                result["total_failed"] = payload.get("total_failed")
+            return result
+        except requests.RequestException:
+            return {
+                "status": "unavailable",
+                "reason": "Diagnostics collector could not be reached",
+                "checked_at": checked_at,
+                "collected_at": None,
+            }
+        except ValueError:
+            return {
+                "status": "unavailable",
+                "reason": "Diagnostics collector returned invalid JSON",
+                "checked_at": checked_at,
+                "collected_at": None,
+            }
+
+    health_status = "available"
+    health_reason = "Collector health endpoint responded successfully"
+    try:
+        response = requests.get(
+            f"{COLLECTOR_URL}/health",
+            timeout=REQUEST_TIMEOUT,
+        )
+        response.raise_for_status()
+        health_payload = response.json()
+        if not isinstance(health_payload, dict) or health_payload.get("status") != "healthy":
+            health_status = "unavailable"
+            health_reason = "Collector health response was not recognized"
+    except (requests.RequestException, ValueError):
+        health_status = "unavailable"
+        health_reason = "Diagnostics collector health endpoint could not be reached"
+
+    # Only explicit, non-empty endpoint configuration counts as configured.
+    # Values and credentials are never returned.
+    integrations = {}
+    for name, env_name in (
+        ("prometheus", "LUMORA_PROMETHEUS_URL"),
+        ("loki", "LUMORA_LOKI_URL"),
+        ("opentelemetry", "LUMORA_OTEL_ENDPOINT"),
+    ):
+        integrations[name] = {
+            "status": "configured" if os.getenv(env_name, "").strip() else "not_configured",
+            "connection_verified": False,
+        }
+
+    return {
+        "assessment_type": "observability_capability_discovery",
+        "checked_at": datetime.now(timezone.utc).isoformat(),
+        "collector": {
+            "status": health_status,
+            "reason": health_reason,
+        },
+        "sources": {
+            "docker_inventory": evidence_source("/inventory"),
+            "host_ssh_kernel": evidence_source("/host/ssh"),
+        },
+        "integrations": integrations,
+        "limitations": [
+            "Native evidence is read from saved snapshots, not a live host query.",
+            "A configured integration endpoint is not proof of connectivity or authorization.",
+            "Prometheus, Loki, and OpenTelemetry connections are not tested by this endpoint.",
+            "Evidence older than the freshness threshold is marked stale.",
+            "Capability discovery performs no infrastructure changes.",
+        ],
+    }
+
+
 @router.get("/diagnose")
 def diagnose(
     target: str = Query(..., description="Approved target: healthy or failing"),
