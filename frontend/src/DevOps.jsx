@@ -24,12 +24,24 @@ function Metric({ label, value }) {
   )
 }
 
+function classifyContainer(container) {
+  const name = (container.container || '').toLowerCase()
+  const image = (container.image || '').toLowerCase()
+
+  if (name.startsWith('lumora-development-')) return 'Development'
+  if (name === 'lumora-test-healthy' || name === 'lumora-test-failing') return 'Test'
+  if (name === 'lumora-diagnostics' || image.includes('lumora-diagnostics')) return 'Diagnostics'
+  if (['lumora-frontend', 'lumora-backend', 'lumora-postgres'].includes(name)) return 'Production'
+  return 'Other'
+}
+
 function DevOps() {
   const [inventory, setInventory] = useState(null)
   const [inventoryLoading, setInventoryLoading] = useState(false)
   const [inventoryError, setInventoryError] = useState('')
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [environmentFilter, setEnvironmentFilter] = useState('all')
   const [selectedId, setSelectedId] = useState('')
   const [detail, setDetail] = useState(null)
   const [detailLoading, setDetailLoading] = useState(false)
@@ -158,19 +170,33 @@ function DevOps() {
     return containers.filter((container) => {
       const matchesStatus =
         statusFilter === 'all' || container.status === statusFilter
+      const environment = classifyContainer(container)
+      const matchesEnvironment =
+        environmentFilter === 'all' || environment === environmentFilter
       const searchable = [
         container.container,
         container.image,
         container.id,
         container.short_id,
+        environment,
       ].filter(Boolean).join(' ').toLowerCase()
-      return matchesStatus && (!query || searchable.includes(query))
+      return matchesStatus && matchesEnvironment && (!query || searchable.includes(query))
     })
-  }, [inventory, search, statusFilter])
+  }, [inventory, search, statusFilter, environmentFilter])
 
   const selectedSummary = inventory?.containers?.find(
     (container) => container.id === selectedId
   )
+
+  const inventoryTimestamp = inventory?.collected_at
+    ? Date.parse(inventory.collected_at)
+    : NaN
+  const inventoryAgeMinutes = Number.isFinite(inventoryTimestamp)
+    ? Math.max(0, Math.floor((Date.now() - inventoryTimestamp) / 60000))
+    : null
+  const inventoryIsStale =
+    inventoryAgeMinutes !== null && inventoryAgeMinutes > 15
+
   const metrics = detail?.metrics
   const selectedAssessment = assessmentResults[selectedId]?.assessment
   const isAssessingSelected = Boolean(assessmentLoading[selectedId])
@@ -314,15 +340,23 @@ function DevOps() {
 
             <details className="host-diagnostics-details">
               <summary>Limitations and interpretation</summary>
-              {Array.isArray(hostAssessment.limitations) && hostAssessment.limitations.length ? (
-                <ul>
-                  {hostAssessment.limitations.map((item, index) => (
-                    <li key={`host-limitation-${index}`}>
-                      {typeof item === 'string' ? item : JSON.stringify(item)}
-                    </li>
-                  ))}
-                </ul>
-              ) : <p>No limitations were returned by the API.</p>}
+              {(() => {
+                const limitations = Array.isArray(hostAssessment.limitations)
+                  ? hostAssessment.limitations
+                      .map((item) => typeof item === 'string' ? item.trim() : JSON.stringify(item))
+                      .filter((item) => Boolean(item))
+                  : []
+
+                return limitations.length > 0 ? (
+                  <ul className="host-limitations-list">
+                    {limitations.map((item, index) => (
+                      <li key={`host-limitation-${index}`}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No additional limitations were supplied by the assessment API.</p>
+                )
+              })()}
             </details>
 
             <p className="host-diagnostics-footnote">
@@ -349,6 +383,25 @@ function DevOps() {
         </div>
       </section>
 
+      {inventory && (
+        <div
+          className={`evidence-freshness ${
+            inventoryAgeMinutes === null
+              ? 'evidence-freshness-unknown'
+              : inventoryIsStale
+                ? 'evidence-freshness-stale'
+                : 'evidence-freshness-fresh'
+          }`}
+          role="status"
+        >
+          {inventoryAgeMinutes === null
+            ? 'Evidence freshness unknown: the snapshot timestamp is missing or invalid.'
+            : inventoryIsStale
+              ? `Stale evidence: this snapshot is ${inventoryAgeMinutes} minutes old. Refresh inventory before relying on its findings.`
+              : `Evidence snapshot is ${inventoryAgeMinutes} minute(s) old. Resource values are saved evidence, not live measurements.`}
+        </div>
+      )}
+
       {inventoryError && (
         <div className="observability-error">{inventoryError}</div>
       )}
@@ -369,6 +422,18 @@ function DevOps() {
           <option value="all">All statuses</option>
           <option value="running">Running</option>
           <option value="exited">Exited</option>
+        </select>
+        <select
+          aria-label="Filter by environment"
+          value={environmentFilter}
+          onChange={(event) => setEnvironmentFilter(event.target.value)}
+        >
+          <option value="all">All environments</option>
+          <option value="Production">Production</option>
+          <option value="Development">Development</option>
+          <option value="Test">Test fixtures</option>
+          <option value="Diagnostics">Diagnostics</option>
+          <option value="Other">Other / standalone</option>
         </select>
       </div>
 
@@ -397,6 +462,9 @@ function DevOps() {
               <span className={`inventory-dot ${container.status === 'running' ? 'dot-running' : 'dot-stopped'}`} />
               <span className="inventory-row-main">
                 <strong>{container.container || container.short_id}</strong>
+                <span className={`environment-badge environment-${classifyContainer(container).toLowerCase()}`}>
+                  {classifyContainer(container)}
+                </span>
                 <small>{container.image || 'Image unavailable'}</small>
                 <small>{container.short_id || container.id}</small>
               </span>

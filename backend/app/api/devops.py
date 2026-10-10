@@ -420,6 +420,7 @@ def assess_host_ssh():
     auth_failure = count(ssh, "authentication_failure")
     preauth_disconnect = count(ssh, "preauth_disconnect")
     established_disconnect = count(ssh, "established_disconnect")
+    unclassified_disconnect = count(ssh, "unclassified_disconnect")
     resource_pressure = count(kernel, "resource_pressure")
     io_network = count(kernel, "io_network_or_panic")
 
@@ -464,16 +465,27 @@ def assess_host_ssh():
     if established_disconnect:
         findings.append("ssh_session_disconnect_events")
         observations.append(
-            f"{established_disconnect} established-connection disconnect event(s) "
-            "matched the collector's rules. They may include sessions other "
-            "than the user's affected terminal."
+            f"{established_disconnect} disconnect event(s) classified as "
+            "established-session events by the collector."
         )
         recommendations.append(
             "Compare disconnect timestamps with the affected SSH client's "
-            "local logs and reconnect time before attributing the cause."
+            "local logs before attributing the cause."
         )
         if severity == "info":
             severity = "low"
+
+    if unclassified_disconnect:
+        findings.append("ssh_unclassified_disconnect_events")
+        observations.append(
+            f"{unclassified_disconnect} SSH connection-ending event(s) were "
+            "recorded, but the messages do not establish whether authentication "
+            "succeeded."
+        )
+        recommendations.append(
+            "Inspect the original SSH journal messages around these timestamps "
+            "before attributing them to an authenticated session."
+        )
 
     if resource_pressure:
         findings.append("kernel_resource_pressure_events")
@@ -513,10 +525,10 @@ def assess_host_ssh():
             "SSH disconnect events were observed, but the available evidence "
             "does not establish why the terminal disconnected."
         )
-    elif auth_failure and not established_disconnect:
+    elif auth_failure and not established_disconnect and not unclassified_disconnect:
         diagnosis = (
             "SSH authentication failures were observed, but these do not "
-            "explain an established terminal session disconnecting."
+            "establish the cause of the reported terminal disconnect."
         )
     elif resource_pressure or io_network:
         diagnosis = (
@@ -543,6 +555,7 @@ def assess_host_ssh():
                 "authentication_failure": auth_failure,
                 "preauth_disconnect": preauth_disconnect,
                 "established_disconnect": established_disconnect,
+                "unclassified_disconnect": unclassified_disconnect,
             },
             "kernel": {
                 "resource_pressure": resource_pressure,

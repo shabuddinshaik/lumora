@@ -3,7 +3,7 @@ import './App.css'
 import DevOps from './DevOps'
 
 function App() {
-  const [activeNav, setActiveNav] = useState('Dashboard')
+  const [activeNav, setActiveNav] = useState('Observability')
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState(null)
   const [fixedAnswer, setFixedAnswer] = useState(null)
@@ -174,12 +174,6 @@ function App() {
   ]
 
   const navItems = [
-    { name: 'Dashboard', icon: '⌂' },
-    { name: 'My Courses', icon: '▣' },
-    { name: 'My Notes', icon: '▤' },
-    { name: 'Ask Lumora', icon: '✦' },
-    { name: 'Quiz', icon: '✓' },
-    { name: 'Progress', icon: '◔' },
     { name: 'Observability', icon: '◉' },
   ]
 
@@ -371,12 +365,12 @@ function App() {
           <div className="brand-mark">L</div>
           <div>
             <div className="brand-name">Lumora</div>
-            <div className="brand-tagline">Learn smarter</div>
+            <div className="brand-tagline">AI-Powered DevOps Intelligence</div>
           </div>
         </div>
 
         <nav className="navigation">
-          <div className="nav-label">LEARNING</div>
+          <div className="nav-label">OPERATIONS</div>
 
           {navItems.map((item) => (
             <button
@@ -400,7 +394,7 @@ function App() {
             <div className="avatar">S</div>
             <div className="user-details">
               <strong>Student</strong>
-              <span>Learning account</span>
+              <span>DevOps workspace</span>
             </div>
           </div>
         </div>

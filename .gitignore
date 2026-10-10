@@ -44,3 +44,10 @@ docker-lab/**/*.before-*
 docker-lab/*.backup*
 docker-lab/**/*.backup*
 docker-lab/.env
+
+# Environment-specific deployment secrets
+deploy/environments/*.env
+!deploy/environments/*.env.example
+
+# Environment-specific runtime data
+deploy/runtime/
